@@ -1,0 +1,22 @@
+﻿<Window x:Class="Lab_rab4_2_KutlubaevA.D._БПИ_23_02.View.WindowNewRole"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Должность" Height="150" Width="300"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <Label Content="Наименование должности:"/>
+            <TextBox Text="{Binding NameRole, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Width="75" Margin="6,6,0,0" IsDefault="True" Click="Ok_Click">OK</Button>
+            <Button Width="75" Margin="6,6,0,0" IsCancel="True">Отмена</Button>
+        </StackPanel>
+    </Grid>
+</Window>

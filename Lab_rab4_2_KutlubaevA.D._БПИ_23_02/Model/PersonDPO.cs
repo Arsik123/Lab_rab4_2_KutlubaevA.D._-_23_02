@@ -1,19 +1,20 @@
-﻿using System;
+using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 
 namespace Lab_rab4_2_KutlubaevA.D._БПИ_23_02.Model
 {
 
-    public class PersonDPO : INotifyPropertyChanged
+    public class PersonDpo : INotifyPropertyChanged
     {
         public int Id { get; set; }
 
-        private string role;
-        public string Role
+        private string roleName;
+        public string RoleName
         {
-            get => role;
-            set { role = value; OnPropertyChanged(); }
+            get => roleName;
+            set { roleName = value; OnPropertyChanged(); }
         }
 
         private string firstName;
@@ -30,26 +31,65 @@ namespace Lab_rab4_2_KutlubaevA.D._БПИ_23_02.Model
             set { lastName = value; OnPropertyChanged(); }
         }
 
-        private DateTime birthday;
-        public DateTime Birthday
+        private string birthday;
+        public string Birthday
         {
             get => birthday;
-            set { birthday = value; OnPropertyChanged(); }
+            set 
+            { 
+                birthday = value; 
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(BirthdayDate));
+            }
         }
 
-        public PersonDPO() { }
-        public PersonDPO(int id, string role, string firstName, string lastName, DateTime birthday)
+        public DateTime? BirthdayDate
         {
-            this.Id = id; this.Role = role;
+            get
+            {
+                if (string.IsNullOrEmpty(Birthday))
+                    return null;
+                
+                if (DateTime.TryParseExact(Birthday, "dd.MM.yyyy", 
+                    CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
+                {
+                    return result;
+                }
+                
+                if (DateTime.TryParse(Birthday, out DateTime result2))
+                {
+                    return result2;
+                }
+                
+                return null;
+            }
+            set
+            {
+                if (value.HasValue)
+                {
+                    Birthday = value.Value.ToString("dd.MM.yyyy");
+                }
+                else
+                {
+                    Birthday = string.Empty;
+                }
+                OnPropertyChanged();
+            }
+        }
+
+        public PersonDpo() { }
+        public PersonDpo(int id, string roleName, string firstName, string lastName, string birthday)
+        {
+            this.Id = id; this.RoleName = roleName;
             this.FirstName = firstName; this.LastName = lastName; this.Birthday = birthday;
         }
 
-        public PersonDPO ShallowCopy()
+        public PersonDpo ShallowCopy()
         {
-            return (PersonDPO)this.MemberwiseClone();
+            return (PersonDpo)this.MemberwiseClone();
         }
 
-        public PersonDPO CopyFromPerson(Person person, System.Collections.Generic.IEnumerable<Role> roles)
+        public PersonDpo CopyFromPerson(Person person, System.Collections.Generic.IEnumerable<Role> roles)
         {
             string roleName = string.Empty;
             foreach (var r in roles)
@@ -62,12 +102,21 @@ namespace Lab_rab4_2_KutlubaevA.D._БПИ_23_02.Model
             if (!string.IsNullOrEmpty(roleName))
             {
                 this.Id = person.Id;
-                this.Role = roleName;
+                this.RoleName = roleName;
                 this.FirstName = person.FirstName;
                 this.LastName = person.LastName;
                 this.Birthday = person.Birthday;
             }
             return this;
+        }
+
+        public static string GetStringBirthday(string birthday)
+        {
+            if (DateTime.TryParse(birthday, out DateTime result))
+            {
+                return result.ToString("dd.MM.yyyy");
+            }
+            return birthday;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
